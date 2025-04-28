@@ -75,7 +75,7 @@
             }
 
             .hidden {
-                display: none;
+                display: none !important;
             }
 
             a {
@@ -241,16 +241,29 @@
                 font-size: 1.2rem;
                 max-width: 600px;
             }
+
+            /* Welcome header */
+            .welcome-header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
         </style>
     </head>
     <body>
         <div class="screen-overlay"></div>
         <div class="container">
             <div id="matrix-intro">
+                <div class="welcome-header">
+                    <h1>WELCOME TO THE MATRIX</h1>
+                </div>
                 <div class="matrix-quote" id="matrix-quote-container">
                     <!-- Matrix quote will be populated here -->
                 </div>
-                <div class="pill-container" id="pill-choice">
+                <div
+                    class="pill-container"
+                    id="pill-choice"
+                    style="display: none;"
+                >
                     <button class="pill blue-pill">BLUE PILL</button>
                     <button class="pill red-pill">RED PILL</button>
                 </div>
@@ -343,6 +356,7 @@
                 const quoteContainer = document.getElementById(
                     "matrix-quote-container"
                 );
+                const pillChoice = document.getElementById("pill-choice");
                 const bluePill = document.querySelector(".blue-pill");
                 const redPill = document.querySelector(".red-pill");
                 const exitMessage = document.getElementById("exit-message");
@@ -351,39 +365,51 @@
                 const matrixQuote =
                     "This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember, all I'm offering is the truth—nothing more.";
 
-                // Display Matrix quote
-                quoteContainer.textContent = matrixQuote;
+                // Display Matrix quote with typewriter effect
+                let i = 0;
+                const typeWriter = () => {
+                    if (i < matrixQuote.length) {
+                        quoteContainer.textContent += matrixQuote.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 30); // Adjust typing speed here
+                    } else {
+                        // Show pill choices after quote is fully displayed
+                        setTimeout(() => {
+                            pillChoice.style.display = "flex";
+                        }, 500);
+                    }
+                };
 
-                // Show pill choices after quote is displayed
-                setTimeout(() => {
-                    document.getElementById("pill-choice").style.display =
-                        "flex";
-                }, 1000);
+                // Start the typewriter effect
+                typeWriter();
 
                 // Blue pill: show exit message and then redirect
                 bluePill.addEventListener("click", () => {
                     // Hide the matrix intro
-                    matrixIntro.style.display = "none";
+                    matrixIntro.classList.add("matrix-fade");
 
-                    // Show the exit message
-                    exitMessage.classList.remove("hidden");
-
-                    // Set timeout to redirect after showing exit message
+                    // Show the exit message after fade
                     setTimeout(() => {
-                        try {
-                            window.close(); // Try to close the window (may not work in all browsers)
-                        } catch (e) {
-                            // If window.close() fails, redirect to a blank page
-                            window.location.href = "about:blank";
-                        }
-                    }, 5000);
+                        matrixIntro.classList.add("hidden");
+                        exitMessage.classList.remove("hidden");
+
+                        // Set timeout to redirect after showing exit message
+                        setTimeout(() => {
+                            try {
+                                window.close(); // Try to close the window (may not work in all browsers)
+                            } catch (e) {
+                                // If window.close() fails, redirect to a blank page
+                                window.location.href = "about:blank";
+                            }
+                        }, 5000);
+                    }, 2000);
                 });
 
                 // Red pill: proceed to terminal
                 redPill.addEventListener("click", () => {
                     matrixIntro.classList.add("matrix-fade");
                     setTimeout(() => {
-                        matrixIntro.style.display = "none";
+                        matrixIntro.classList.add("hidden");
                         terminal.classList.remove("hidden");
                         commandInput.focus();
                     }, 3000);
