@@ -15,12 +15,63 @@
                 font-size: 16px;
                 text-shadow: 0 0 5px rgba(51, 255, 51, 0.5); /* Subtle glow */
                 letter-spacing: 0.05em; /* Slightly spaced letters */
-                animation: flicker 5s infinite;
+                animation: flicker 8s infinite;
+                position: relative;
+                /* Built-in scanlines in the background */
+                background-image: repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0),
+                    rgba(0, 0, 0, 0) 1px,
+                    rgba(0, 0, 0, 0.3) 1px,
+                    rgba(0, 0, 0, 0.3) 2px
+                );
+                background-size: 100% 4px;
+            }
+
+            /* Screen flicker effect */
+            @keyframes flicker {
+                0% { opacity: 1; }
+                3% { opacity: 0.8; }
+                6% { opacity: 1; }
+                7% { opacity: 0.9; }
+                8% { opacity: 1; }
+                9% { opacity: 1; }
+                10% { opacity: 0.9; }
+                20% { opacity: 1; }
+                50% { opacity: 0.97; }
+                60% { opacity: 0.95; }
+                70% { opacity: 1; }
+                80% { opacity: 0.9; }
+                90% { opacity: 1; }
+                92% { opacity: 0.9; }
+                100% { opacity: 1; }
+            }
+
+            /* Screen glow effect */
+            .screen-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0),
+                    rgba(0, 0, 0, 0) 1px,
+                    rgba(0, 0, 0, 0.3) 1px,
+                    rgba(0, 0, 0, 0.3) 2px
+                );
+                background-size: 100% 4px;
+                pointer-events: none;
+                z-index: 999;
+                opacity: 0.5;
             }
 
             .container {
                 max-width: 800px;
                 margin: 0 auto;
+                position: relative;
+                z-index: 1;
             }
 
             .hidden {
@@ -109,52 +160,116 @@
                 padding: 0;
             }
 
-            /* Add scanline effect */
-            body::after {
-                content: '';
+            /* Matrix pill styles */
+            .pill-container {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                margin: 30px 0;
+            }
+
+            .pill {
+                padding: 10px 25px;
+                border-radius: 20px;
+                font-size: 18px;
+                cursor: pointer;
+                transition: transform 0.3s, box-shadow 0.3s;
+                border: none;
+                font-family: "Courier New", monospace;
+                letter-spacing: 0.05em;
+                text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+                font-weight: bold;
+            }
+
+            .pill:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+            }
+
+            .blue-pill {
+                background-color: #0080ff;
+                color: white;
+            }
+
+            .red-pill {
+                background-color: #ff0033;
+                color: white;
+            }
+
+            /* Matrix animation */
+            @keyframes matrixFade {
+                0% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+
+            .matrix-fade {
+                animation: matrixFade 3s forwards;
+            }
+
+            /* Matrix quote styling */
+            .matrix-quote {
+                max-width: 800px;
+                margin: 20px auto;
+                text-align: left;
+                line-height: 1.6;
+            }
+
+            /* Exit message styling */
+            .exit-message {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(
-                    transparent 50%,
-                    rgba(0, 0, 0, 0.05) 50%
-                );
-                background-size: 100% 4px;
-                z-index: 1000;
-                pointer-events: none;
-                opacity: 0.15;
+                background-color: #0d0d0d;
+                color: #33ff33;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                text-align: center;
+                padding: 20px;
             }
 
-            /* Add a slight screen flicker */
-            @keyframes flicker {
-                0%, 100% { opacity: 1; }
-                92% { opacity: 0.95; }
+            .exit-message h1 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+
+            .exit-message p {
+                font-size: 1.2rem;
+                max-width: 600px;
             }
         </style>
     </head>
     <body>
+        <div class="screen-overlay"></div>
         <div class="container">
-            <div id="terminal">
+            <div id="matrix-intro">
+                <div class="matrix-quote" id="matrix-quote-container">
+                    <!-- Matrix quote will be populated here -->
+                </div>
+                <div class="pill-container" id="pill-choice">
+                    <button class="pill blue-pill">BLUE PILL</button>
+                    <button class="pill red-pill">RED PILL</button>
+                </div>
+            </div>
+
+            <div id="terminal" class="hidden">
                 <div id="output">
-                    <div class="typing">Welcome to the Matrix!</div>
+                    <div class="typing">WELCOME TO MY PORTFOLIO</div>
                     <p>Type <strong>help</strong> to see available commands.</p>
                 </div>
                 <div class="command-line">
                     <span class="prompt">guest@portfolio:~$</span>
-                    <input
-                        type="text"
-                        id="command-input"
-                        autofocus
-                        autocomplete="off"
-                    />
+                    <input type="text" id="command-input" autocomplete="off" />
                 </div>
             </div>
 
             <div id="sections">
                 <div id="help" class="hidden">
-                    <h2>Available Commands:</h2>
+                    <h2>AVAILABLE COMMANDS:</h2>
                     <p>about - Display information about me</p>
                     <p>projects - View my projects</p>
                     <p>skills - List my technical skills</p>
@@ -165,69 +280,130 @@
 
                 <div id="about" class="hidden">
                     <h2>ABOUT ME</h2>
-                    <p>Hello, I'm Sakib MD Nazmush.</p>
+                    <p>Hello, I'm [YOUR NAME].</p>
+                    <p>I am a [YOUR PROFESSION] based in [YOUR LOCATION].</p>
                     <p>
-                        I am a Technical Support Engineer based in Dhaka,
-                        Bangladesh.
+                        [ADD YOUR BIO HERE - A few sentences about your
+                        background, approach to work, and what drives you]
                     </p>
-                    <p></p>
                 </div>
 
                 <div id="projects" class="hidden">
                     <h2>PROJECTS</h2>
-                    <h3>Project 1:</h3>
-                    <p></p>
-                    <p>Technologies:</p>
+                    <h3>Project 1: [PROJECT NAME]</h3>
+                    <p>[PROJECT DESCRIPTION]</p>
+                    <p>Technologies: [TECH STACK]</p>
                     <p>Link: <a href="#">View Project</a></p>
 
                     <h3>Project 2: [PROJECT NAME]</h3>
-                    <p></p>
-                    <p>Technologies:</p>
+                    <p>[PROJECT DESCRIPTION]</p>
+                    <p>Technologies: [TECH STACK]</p>
                     <p>Link: <a href="#">View Project</a></p>
 
-                    <h3>Project 3:</h3>
-                    <p></p>
-                    <p>Technologies:</p>
+                    <h3>Project 3: [PROJECT NAME]</h3>
+                    <p>[PROJECT DESCRIPTION]</p>
+                    <p>Technologies: [TECH STACK]</p>
                     <p>Link: <a href="#">View Project</a></p>
                 </div>
 
                 <div id="skills" class="hidden">
                     <h2>TECHNICAL SKILLS</h2>
-                    <p>Programming Languages:</p>
-                    <p>Frameworks & Libraries:</p>
-                    <p>Tools & Technologies:</p>
-                    <p>Other Skills:</p>
+                    <p>Programming Languages: [LIST YOUR LANGUAGES]</p>
+                    <p>Frameworks & Libraries: [LIST YOUR FRAMEWORKS]</p>
+                    <p>Tools & Technologies: [LIST YOUR TOOLS]</p>
+                    <p>Other Skills: [ANY OTHER RELEVANT SKILLS]</p>
                 </div>
 
                 <div id="contact" class="hidden">
                     <h2>CONTACT INFORMATION</h2>
-                    <p>Email:</p>
-                    <p>GitHub:</p>
-                    <p>LinkedIn:</p>
+                    <p>Email: your.email@example.com</p>
+                    <p>GitHub: github.com/yourusername</p>
+                    <p>LinkedIn: linkedin.com/in/yourusername</p>
                     <p>Type 'message' to leave me a message</p>
                 </div>
             </div>
         </div>
 
+        <!-- Exit message (initially hidden) -->
+        <div id="exit-message" class="exit-message hidden">
+            <h1>You chose the Blue Pill</h1>
+            <p>
+                You have decided to exit the Matrix and return to your ordinary
+                reality.
+            </p>
+            <p>The page will automatically close in 5 seconds...</p>
+        </div>
+
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const commandInput = document.getElementById("command-input");
+                const matrixIntro = document.getElementById("matrix-intro");
                 const terminal = document.getElementById("terminal");
+                const commandInput = document.getElementById("command-input");
                 const output = document.getElementById("output");
+                const quoteContainer = document.getElementById(
+                    "matrix-quote-container"
+                );
+                const bluePill = document.querySelector(".blue-pill");
+                const redPill = document.querySelector(".red-pill");
+                const exitMessage = document.getElementById("exit-message");
+
+                // Matrix intro text
+                const matrixQuote =
+                    "This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember, all I'm offering is the truth—nothing more.";
+
+                // Display Matrix quote
+                quoteContainer.textContent = matrixQuote;
+
+                // Show pill choices after quote is displayed
+                setTimeout(() => {
+                    document.getElementById("pill-choice").style.display =
+                        "flex";
+                }, 1000);
+
+                // Blue pill: show exit message and then redirect
+                bluePill.addEventListener("click", () => {
+                    // Hide the matrix intro
+                    matrixIntro.style.display = "none";
+
+                    // Show the exit message
+                    exitMessage.classList.remove("hidden");
+
+                    // Set timeout to redirect after showing exit message
+                    setTimeout(() => {
+                        try {
+                            window.close(); // Try to close the window (may not work in all browsers)
+                        } catch (e) {
+                            // If window.close() fails, redirect to a blank page
+                            window.location.href = "about:blank";
+                        }
+                    }, 5000);
+                });
+
+                // Red pill: proceed to terminal
+                redPill.addEventListener("click", () => {
+                    matrixIntro.classList.add("matrix-fade");
+                    setTimeout(() => {
+                        matrixIntro.style.display = "none";
+                        terminal.classList.remove("hidden");
+                        commandInput.focus();
+                    }, 3000);
+                });
 
                 // Focus input when clicking anywhere on terminal
                 terminal.addEventListener("click", () => {
                     commandInput.focus();
                 });
 
+                // Process terminal commands
                 commandInput.addEventListener("keydown", function (event) {
                     if (event.key === "Enter") {
                         const command = this.value.trim().toLowerCase();
                         const response = document.createElement("div");
 
-                        // Echo command
-                        const commandEcho = document.createElement("p");
-                        commandEcho.innerHTML = `<span class="prompt">guest@portfolio:~$</span> ${command}`;
+                        // Echo command with proper alignment
+                        const commandEcho = document.createElement("div");
+                        commandEcho.classList.add("command-echo");
+                        commandEcho.innerHTML = `<span class="prompt">guest@portfolio:~$</span><span class="command-text">${command}</span>`;
                         output.appendChild(commandEcho);
 
                         // Process command
@@ -281,9 +457,6 @@
                         window.scrollTo(0, document.body.scrollHeight);
                     }
                 });
-
-                // Initial focus
-                commandInput.focus();
             });
         </script>
     </body>
