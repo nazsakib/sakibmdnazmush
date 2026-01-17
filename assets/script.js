@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(() => {
                         const line2 = document.createElement("p");
                         line2.innerHTML =
-                            "Type <strong>help</strong> to see available commands.";
+                            "Type <strong>help</strong> to see available commands. Or you can type <strong>hack</strong>.";
                         line2.className = "fade-in-text";
                         outputDiv.appendChild(line2);
                         setTimeout(() => {
@@ -323,6 +323,52 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (command.startsWith("sudo")) {
                 response.innerHTML = `<p class='error stream-text'>Permission denied: You are not the One.</p>
                                       <p class='stream-text' style='color:#fff'>This incident will be reported.</p>`;
+                // --- ADD THESE NEW COMMANDS ---
+            } else if (command === "hack") {
+                isPrinting = true;
+                const hackLines = [
+                    "Initializing brute force attack...",
+                    "Target: Gibson Mainframe",
+                    "[+] Bypassing firewall...",
+                    "[+] Cracking 256-bit encryption...",
+                    "Injecting SQL payload...",
+                    "Downloading sensitive_data.zip...",
+                    "[ERROR] Trace detected!",
+                    "Rerouting through proxy nodes...",
+                    "[SUCCESS] Access granted.",
+                    "System check complete. You are in.",
+                ];
+
+                let delay = 0;
+                hackLines.forEach((line) => {
+                    setTimeout(() => {
+                        const p = document.createElement("p");
+                        p.className = "stream-text";
+                        p.style.color = line.includes("ERROR")
+                            ? "red"
+                            : line.includes("SUCCESS")
+                              ? "#33ff33"
+                              : "#ccc";
+                        p.innerText = line;
+                        response.appendChild(p);
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }, delay);
+                    delay += Math.random() * 300; // Random speed for realism
+                });
+
+                // Unlock terminal after hack finishes
+                setTimeout(() => {
+                    isPrinting = false;
+                    commandInput.focus();
+                }, delay + 500);
+            } else if (command === "mute") {
+                keySound.volume = 0;
+                response.innerHTML =
+                    "<p class='stream-text'>Audio output: <span style='color:red'>MUTED</span></p>";
+            } else if (command === "unmute") {
+                keySound.volume = 0.3;
+                response.innerHTML =
+                    "<p class='stream-text'>Audio output: <span style='color:#33ff33'>ENABLED</span></p>";
             } else {
                 response.innerHTML = `<p class='error stream-text'>Command not found: ${command}. Type 'help'.</p>`;
             }
