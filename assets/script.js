@@ -37,12 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
         rainDrops[x] = 1;
     }
 
+    // 1. ADD THIS VARIABLE (It holds the current color)
+    let matrixColor = "#0F0"; // Default is Green
+
     const drawRain = () => {
         // Black background with slight opacity to create "trail" effect
         ctx.fillStyle = "rgba(13, 13, 13, 0.05)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = "#0F0"; // Green text
+        // 2. CHANGE THIS LINE (Use the variable instead of hardcoded "#0F0")
+        ctx.fillStyle = matrixColor;
+
         ctx.font = fontSize + "px monospace";
 
         for (let i = 0; i < rainDrops.length; i++) {
@@ -170,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let commandHistory = [];
     let historyIndex = -1;
     let isPrinting = false;
+    let hackUsed = false;
 
     // Helper: Mobile Focus Fix
     commandInput.addEventListener("focus", () => {
@@ -325,42 +331,100 @@ document.addEventListener("DOMContentLoaded", () => {
                                       <p class='stream-text' style='color:#fff'>This incident will be reported.</p>`;
                 // --- ADD THESE NEW COMMANDS ---
             } else if (command === "hack") {
-                isPrinting = true;
-                const hackLines = [
-                    "Initializing brute force attack...",
-                    "Target: Gibson Mainframe",
-                    "[+] Bypassing firewall...",
-                    "[+] Cracking 256-bit encryption...",
-                    "Injecting SQL payload...",
-                    "Downloading sensitive_data.zip...",
-                    "[ERROR] Trace detected!",
-                    "Rerouting through proxy nodes...",
-                    "[SUCCESS] Access granted.",
-                    "System check complete. You are in.",
-                ];
+                // CHECK: Has this already been used?
+                if (hackUsed) {
+                    // IF YES: Show error message
+                    response.innerHTML = `<p class="stream-text" style="color: red;">[ERROR] Security patch active. Exploit no longer valid.</p>`;
+                } else {
+                    // IF NO: Run the hack sequence
+                    hackUsed = true; // Mark as used immediately
+                    isPrinting = true;
 
-                let delay = 0;
-                hackLines.forEach((line) => {
+                    // --- EXISTING HACK LOGIC ---
+                    const panicLines = [
+                        "WARNING: UNAUTHORIZED ACCESS DETECTED!",
+                        "SYSTEM INTEGRITY COMPROMISED...",
+                        "FIREWALL BREACHED.",
+                        "DOWNLOADING USER DATA...",
+                        "CRITICAL ERROR: KERNEL PANIC",
+                        "SYSTEM SHUTDOWN IMMINENT...",
+                    ];
+
+                    let lineDelay = 0;
+                    const lineSpeed = 600;
+
+                    panicLines.forEach((line) => {
+                        setTimeout(() => {
+                            const p = document.createElement("p");
+                            p.className = "stream-text";
+                            p.style.color = "red";
+                            p.style.fontWeight = "bold";
+                            p.innerText = line;
+                            response.appendChild(p);
+                            window.scrollTo(0, document.body.scrollHeight);
+                        }, lineDelay);
+                        lineDelay += lineSpeed;
+                    });
+
+                    // Start Chaos
                     setTimeout(() => {
-                        const p = document.createElement("p");
-                        p.className = "stream-text";
-                        p.style.color = line.includes("ERROR")
-                            ? "red"
-                            : line.includes("SUCCESS")
-                              ? "#33ff33"
-                              : "#ccc";
-                        p.innerText = line;
-                        response.appendChild(p);
-                        window.scrollTo(0, document.body.scrollHeight);
-                    }, delay);
-                    delay += Math.random() * 300; // Random speed for realism
-                });
+                        document.body.classList.add("system-failure");
+                        matrixColor = "#F00"; // Red Rain
 
-                // Unlock terminal after hack finishes
-                setTimeout(() => {
-                    isPrinting = false;
-                    commandInput.focus();
-                }, delay + 500);
+                        // Chaos Duration (6 seconds)
+                        setTimeout(() => {
+                            document.body.classList.remove("system-failure");
+                            output.classList.add("fade-out-content");
+
+                            // Reboot Sequence
+                            setTimeout(() => {
+                                matrixColor = "#0F0"; // Green Rain
+                                output.innerHTML = ""; // Wipe screen
+                                output.classList.remove("fade-out-content");
+
+                                // Hide prompt
+                                const commandLine =
+                                    document.querySelector(".command-line");
+                                commandLine.classList.add("transparent");
+                                commandLine.classList.remove("fade-in-text");
+
+                                // Print "System restored."
+                                const msg1 = document.createElement("p");
+                                msg1.className = "stream-text";
+                                msg1.style.color = "#33ff33";
+                                msg1.style.marginTop = "20px";
+                                msg1.innerText = "System restored.";
+                                output.appendChild(msg1);
+
+                                // Wait, then print "Type help"
+                                setTimeout(() => {
+                                    const msg2 = document.createElement("p");
+                                    msg2.className = "stream-text";
+                                    msg2.innerHTML =
+                                        "You need help? Type <strong>help</strong>.";
+                                    output.appendChild(msg2);
+
+                                    // Reveal Input Line
+                                    setTimeout(() => {
+                                        commandLine.classList.remove(
+                                            "transparent",
+                                        );
+                                        commandLine.classList.add(
+                                            "fade-in-text",
+                                        );
+
+                                        commandInput.focus();
+                                        isPrinting = false;
+                                        window.scrollTo(
+                                            0,
+                                            document.body.scrollHeight,
+                                        );
+                                    }, 1000);
+                                }, 1000);
+                            }, 2000); // End of fade out
+                        }, 6000); // End of chaos
+                    }, lineDelay);
+                }
             } else if (command === "mute") {
                 keySound.volume = 0;
                 response.innerHTML =

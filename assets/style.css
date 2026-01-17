@@ -450,3 +450,103 @@ h3 {
     opacity: 0.2;
     /* Subtle enough to not distract from reading */
 }
+
+/* --- REFINED HACKED MODE (Digital Corruption) --- */
+
+.system-failure {
+    color: #ff0000 !important;
+    position: relative;
+
+    /* RGB Split Effect (Static but intense) */
+    text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
+
+    /* Intense vibration without moving the whole page too much */
+    animation: signal-noise 0.2s infinite;
+}
+
+/* Make inputs red too */
+.system-failure input,
+.system-failure .prompt {
+    color: #ff0000 !important;
+    text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
+}
+
+/* The Vibration Animation */
+@keyframes signal-noise {
+    0% {
+        transform: translate(0px, 0px);
+        opacity: 1;
+    }
+
+    10% {
+        transform: translate(-2px, 1px);
+        opacity: 0.8;
+    }
+
+    20% {
+        transform: translate(2px, -1px);
+        opacity: 1;
+    }
+
+    30% {
+        transform: translate(-1px, 2px);
+        opacity: 0.9;
+    }
+
+    40% {
+        transform: translate(1px, -2px);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translate(-2px, 0px);
+        opacity: 0.8;
+    }
+
+    60% {
+        transform: translate(2px, 0px);
+        opacity: 1;
+    }
+
+    70% {
+        transform: translate(0px, 2px);
+        opacity: 0.9;
+    }
+
+    80% {
+        transform: translate(0px, -2px);
+        opacity: 1;
+    }
+
+    90% {
+        transform: translate(2px, 1px);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(0px, 0px);
+        opacity: 1;
+    }
+}
+
+/* OPTIONAL: Add a "Scanline" overlay only during hack */
+.system-failure::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 10;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+}
+
+/* Fade out animation for the reboot sequence */
+.fade-out-content {
+    opacity: 0;
+    transition: opacity 2.0s ease-out;
+    /* Slow 2-second fade */
+}
