@@ -142,9 +142,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Process terminal commands
+    // --- NEW: Command History Storage ---
+    let commandHistory = [];
+    let historyIndex = -1;
+
+    // Process terminal commands
     commandInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
+        // Feature 1: Command History (Up/Down Arrows)
+        if (event.key === "ArrowUp") {
+            if (historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                this.value =
+                    commandHistory[commandHistory.length - 1 - historyIndex];
+            }
+            event.preventDefault(); // Stop cursor from moving to start
+        } else if (event.key === "ArrowDown") {
+            if (historyIndex > 0) {
+                historyIndex--;
+                this.value =
+                    commandHistory[commandHistory.length - 1 - historyIndex];
+            } else {
+                historyIndex = -1;
+                this.value = "";
+            }
+        }
+        // Feature 2: Execute Command (Enter)
+        else if (event.key === "Enter") {
             const command = this.value.trim().toLowerCase();
+
+            // Save to history (if not empty)
+            if (command) {
+                commandHistory.push(command);
+                historyIndex = -1; // Reset history index
+            }
+
             const response = document.createElement("div");
 
             // Echo command with proper alignment
@@ -188,13 +219,48 @@ document.addEventListener("DOMContentLoaded", () => {
                 while (output.firstChild) {
                     output.removeChild(output.firstChild);
                 }
+            } else if (command === "resume" || command === "download") {
+                // Feature 3: Download Resume
+                response.innerHTML =
+                    "<p>Initiating download sequence...</p><p>Downloading <strong>sakib_resume.pdf</strong>...</p>";
+
+                // Create invisible link to trigger download
+                const link = document.createElement("a");
+                link.href = "assets/sakib_resume.pdf"; // Make sure you upload this file!
+                link.download = "Sakib_Nazmush_Resume.pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             } else if (command === "message") {
                 response.innerHTML =
                     "<p>Message functionality would be implemented here with a form.</p>";
+            } else if (command === "sudo") {
+                // Easter Egg
+                response.innerHTML =
+                    "<p class='error'>Permission denied: You are not the One.</p>";
             } else if (command === "") {
                 // Do nothing for empty command
-            } else {
-                response.innerHTML = `<p>Command not found: ${command}. Type 'help' for available commands.</p>`;
+            }
+            // Add this inside the command processing block in script.js
+            // Place it right before the final "else { command not found }" block
+            else if (command === "exit") {
+                // 1. Show a logout message
+                response.innerHTML =
+                    "<p>Terminating session...</p><p>Logging out guest user...</p>";
+
+                // 2. Wait 1 second, then close
+                setTimeout(() => {
+                    try {
+                        window.close();
+                    } catch (e) {
+                        console.log("Browser prevented close");
+                    }
+                    window.location.href = "about:blank"; // Fallback to blank page
+                }, 1000);
+            }
+            // ... existing code continues ...
+            else {
+                response.innerHTML = `<p class='error'>Command not found: ${command}. Type 'help' for available commands.</p>`;
             }
 
             output.appendChild(response);
