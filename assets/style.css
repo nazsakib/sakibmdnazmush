@@ -85,6 +85,10 @@ body {
     }
 }
 
+#matrix-quote-container {
+    font-size: 18px !important;
+}
+
 /* Screen glow effect */
 .screen-overlay {
     position: fixed;
