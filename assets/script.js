@@ -32,34 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
     typeWriter();
 
     // Blue pill: show exit message and then redirect
-<<<<<<< HEAD
-=======
-    // Blue pill: show exit message and then redirect
->>>>>>> master
     bluePill.addEventListener("click", () => {
         // Hide the matrix intro
         matrixIntro.classList.add("matrix-fade");
 
-<<<<<<< HEAD
-        // Show the exit message after fade
-=======
         // Wait for the fade animation (2 seconds), then show exit message
->>>>>>> master
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             exitMessage.classList.remove("hidden");
 
-<<<<<<< HEAD
-            // Set timeout to redirect after showing exit message
-            setTimeout(() => {
-                try {
-                    window.close(); // Try to close the window (may not work in all browsers)
-                } catch (e) {
-                    // If window.close() fails, redirect to a blank page
-                    window.location.href = "about:blank";
-                }
-            }, 5000);
-=======
             // --- NEW COUNTDOWN LOGIC ---
             let timeLeft = 3; // Start countdown at 3
             const countdownElement = document.getElementById("countdown");
@@ -89,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "about:blank";
                 }
             }, 1000);
->>>>>>> master
         }, 2000);
     });
 
