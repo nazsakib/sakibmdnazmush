@@ -224,6 +224,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     link.click();
                     document.body.removeChild(link);
                 }, 1000);
+                // --- ADD THIS BLOCK ---
+            } else if (
+                command === "message" ||
+                command === "email" ||
+                command === "mail"
+            ) {
+                response.innerHTML =
+                    "<p class='stream-text'>Opening your email client...</p>";
+
+                // Wait 1 second, then open the mailto link
+                setTimeout(() => {
+                    window.location.href =
+                        "mailto:sakibsnaz@gmail.com?subject=Hello from your Portfolio&body=Hi Sakib, I saw your portfolio and wanted to reach out.";
+                }, 1000);
+
+                // --- END OF NEW BLOCK ---
             } else if (command === "exit") {
                 isPrinting = true;
                 response.innerHTML =
