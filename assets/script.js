@@ -31,47 +31,100 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start the typewriter effect
     typeWriter();
 
-    // Blue pill: show exit message and then redirect
+    // Blue pill: 10s Total Countdown (7s Text + 3s Big Numbers)
     bluePill.addEventListener("click", () => {
-        // Hide the matrix intro
+        // 1. Start fade out
         matrixIntro.classList.add("matrix-fade");
 
-        // Wait for the fade animation (2 seconds), then show exit message
+        // 2. Wait 2 seconds for fade animation, then start sequence
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             exitMessage.classList.remove("hidden");
 
-            // --- NEW COUNTDOWN LOGIC ---
-            let timeLeft = 3; // Start countdown at 3
-            const countdownElement = document.getElementById("countdown");
+            // --- COUNTDOWN LOGIC ---
+            let timeLeft = 10; // Start at 10 total seconds
+            const countdownSpan = document.getElementById("countdown");
 
-            // Update the timer every 1 second (1000ms)
-            const timer = setInterval(() => {
+            // Update function
+            const updateTimer = () => {
                 timeLeft--; // Decrease time
 
-                // Update text on screen if element exists
-                if (countdownElement) {
-                    countdownElement.textContent = timeLeft;
-                }
+                if (timeLeft > 3) {
+                    // PHASE 1: Update the small text (Seconds 9 to 4)
+                    if (countdownSpan) countdownSpan.innerText = timeLeft;
+                } else if (timeLeft === 3) {
+                    // PHASE 2: Switch to BIG Matrix Numbers (Seconds 3)
+                    exitMessage.innerHTML = ""; // Clear the reading text
 
-                // When time hits 0, stop timer and close
-                if (timeLeft <= 0) {
+                    const bigNumber = document.createElement("div");
+                    bigNumber.className = "big-countdown";
+                    bigNumber.id = "big-count"; // Add ID to find it later
+                    bigNumber.innerText = timeLeft;
+                    exitMessage.appendChild(bigNumber);
+                } else if (timeLeft > 0) {
+                    // Continue BIG Countdown (Seconds 2 to 1)
+                    const bigNumber = document.getElementById("big-count");
+                    if (bigNumber) bigNumber.innerText = timeLeft;
+                } else {
+                    // Time is up (0) - Close
                     clearInterval(timer);
-
-                    // Attempt to close (This works if script opened window)
                     try {
                         window.close();
                     } catch (e) {
                         console.log("Browser prevented close");
                     }
-
-                    // FALLBACK: Since browsers block window.close(),
-                    // redirect to a blank page to simulate "exiting"
                     window.location.href = "about:blank";
                 }
-            }, 1000);
+            };
+
+            // Run the timer every 1 second
+            const timer = setInterval(updateTimer, 1000);
         }, 2000);
     });
+    // // Blue pill: show exit message, wait, then show BIG countdown
+    // bluePill.addEventListener("click", () => {
+    //     // 1. Start the fade out animation
+    //     matrixIntro.classList.add("matrix-fade");
+
+    //     // 2. Wait 2 seconds for fade to finish, then show the text
+    //     setTimeout(() => {
+    //         matrixIntro.classList.add("hidden");
+    //         exitMessage.classList.remove("hidden");
+
+    //         // 3. Wait 2 MORE seconds (reading time), then switch to BIG countdown
+    //         setTimeout(() => {
+    //             // Clear the "You chose blue pill" text completely
+    //             exitMessage.innerHTML = "";
+
+    //             // Create the big number element
+    //             const bigNumber = document.createElement("div");
+    //             bigNumber.className = "big-countdown";
+    //             bigNumber.innerText = "3";
+    //             exitMessage.appendChild(bigNumber);
+
+    //             // Start the countdown logic
+    //             let timeLeft = 10;
+    //             const timer = setInterval(() => {
+    //                 timeLeft--;
+
+    //                 if (timeLeft > 0) {
+    //                     // Update the big number
+    //                     bigNumber.innerText = timeLeft;
+    //                 } else {
+    //                     // Time is up (0) - Stop timer and close
+    //                     clearInterval(timer);
+
+    //                     try {
+    //                         window.close();
+    //                     } catch (e) {
+    //                         console.log("Browser prevented close");
+    //                     }
+    //                     window.location.href = "about:blank";
+    //                 }
+    //             }, 1000); // Update every 1 second
+    //         }, 7000); // 2-second delay before countdown starts
+    //     }, 2000); // 2-second delay for fade out
+    // });
 
     // Red pill: proceed to terminal
     redPill.addEventListener("click", () => {

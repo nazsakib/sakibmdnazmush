@@ -310,3 +310,19 @@ h3 {
     text-align: center;
     margin-bottom: 30px;
 }
+
+/* --- Add this to the bottom of style.css --- */
+
+.big-countdown {
+    font-size: 12rem;
+    /* Huge text */
+    font-weight: bold;
+    color: #33ff33;
+    text-shadow: 0 0 20px #33ff33, 0 0 40px #33ff33;
+    /* Intense glow */
+    animation: flicker 0.1s infinite;
+    /* Fast, glitchy flicker */
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+}
