@@ -32,15 +32,24 @@ document.addEventListener("DOMContentLoaded", () => {
     typeWriter();
 
     // Blue pill: show exit message and then redirect
+<<<<<<< HEAD
+=======
+    // Blue pill: show exit message and then redirect
+>>>>>>> master
     bluePill.addEventListener("click", () => {
         // Hide the matrix intro
         matrixIntro.classList.add("matrix-fade");
 
+<<<<<<< HEAD
         // Show the exit message after fade
+=======
+        // Wait for the fade animation (2 seconds), then show exit message
+>>>>>>> master
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             exitMessage.classList.remove("hidden");
 
+<<<<<<< HEAD
             // Set timeout to redirect after showing exit message
             setTimeout(() => {
                 try {
@@ -50,6 +59,37 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "about:blank";
                 }
             }, 5000);
+=======
+            // --- NEW COUNTDOWN LOGIC ---
+            let timeLeft = 3; // Start countdown at 3
+            const countdownElement = document.getElementById("countdown");
+
+            // Update the timer every 1 second (1000ms)
+            const timer = setInterval(() => {
+                timeLeft--; // Decrease time
+
+                // Update text on screen if element exists
+                if (countdownElement) {
+                    countdownElement.textContent = timeLeft;
+                }
+
+                // When time hits 0, stop timer and close
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+
+                    // Attempt to close (This works if script opened window)
+                    try {
+                        window.close();
+                    } catch (e) {
+                        console.log("Browser prevented close");
+                    }
+
+                    // FALLBACK: Since browsers block window.close(),
+                    // redirect to a blank page to simulate "exiting"
+                    window.location.href = "about:blank";
+                }
+            }, 1000);
+>>>>>>> master
         }, 2000);
     });
 
