@@ -32,24 +32,45 @@ document.addEventListener("DOMContentLoaded", () => {
     typeWriter();
 
     // Blue pill: show exit message and then redirect
+    // Blue pill: show exit message and then redirect
     bluePill.addEventListener("click", () => {
         // Hide the matrix intro
         matrixIntro.classList.add("matrix-fade");
 
-        // Show the exit message after fade
+        // Wait for the fade animation (2 seconds), then show exit message
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             exitMessage.classList.remove("hidden");
 
-            // Set timeout to redirect after showing exit message
-            setTimeout(() => {
-                try {
-                    window.close(); // Try to close the window (may not work in all browsers)
-                } catch (e) {
-                    // If window.close() fails, redirect to a blank page
+            // --- NEW COUNTDOWN LOGIC ---
+            let timeLeft = 3; // Start countdown at 3
+            const countdownElement = document.getElementById("countdown");
+
+            // Update the timer every 1 second (1000ms)
+            const timer = setInterval(() => {
+                timeLeft--; // Decrease time
+
+                // Update text on screen if element exists
+                if (countdownElement) {
+                    countdownElement.textContent = timeLeft;
+                }
+
+                // When time hits 0, stop timer and close
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+
+                    // Attempt to close (This works if script opened window)
+                    try {
+                        window.close();
+                    } catch (e) {
+                        console.log("Browser prevented close");
+                    }
+
+                    // FALLBACK: Since browsers block window.close(),
+                    // redirect to a blank page to simulate "exiting"
                     window.location.href = "about:blank";
                 }
-            }, 5000);
+            }, 1000);
         }, 2000);
     });
 
