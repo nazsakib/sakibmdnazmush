@@ -7,6 +7,7 @@
         <title>Terminal Portfolio</title>
     </head>
     <body>
+        <canvas id="matrix-rain"></canvas>
         <div class="screen-overlay"></div>
         <div class="container">
             <div id="matrix-intro">
@@ -26,26 +27,45 @@
 
             <div id="terminal" class="hidden">
                 <div id="output"></div>
+
                 <div class="command-line">
                     <span class="prompt">guest@portfolio:~$</span>
-                    <input type="text" id="command-input" autocomplete="off" />
+                    <input
+                        type="text"
+                        id="command-input"
+                        autocomplete="off"
+                        autofocus
+                    />
                 </div>
             </div>
 
             <div id="sections">
                 <div id="help" class="hidden">
-                    <h2>Available Commands:</h2>
+                    <pre class="ascii-art">
+  _   _  ____  __   ____ 
+ ( )_( )( ___)(  ) (  _ \
+  ) _ (  )__)  )(__ )___/
+ (_) (_)(____)(____)(__) 
+</pre
+                    >
                     <p>about - Display information about me</p>
                     <p>projects - View my projects</p>
                     <p>skills - List my technical skills</p>
                     <p>contact - How to reach me</p>
                     <p>clear - Clear the terminal</p>
+                    <p>message - Send me an email</p>
                     <p>exit - Close the terminal session</p>
                     <p>help - Display this help message</p>
                 </div>
 
                 <div id="about" class="hidden">
-                    <h2>About Me</h2>
+                    <pre class="ascii-art">
+   __   ____  __  __  ____ 
+  /__\ (  _ \(  )(  )(_  _)
+ /(__)\ ) _ < )(__)(  )(  
+(__)(__)(____/(______)(__) 
+</pre
+                    >
                     <p>Hello, I'm Sakib.</p>
                     <p>
                         I'm a Technical Support Engineer focused on helping
@@ -95,7 +115,13 @@
                 </div>
 
                 <div id="projects" class="hidden">
-                    <h2>Projects</h2>
+                    <pre class="ascii-art">
+ ____  ____  __  ____  ___  ____  ___ 
+(  _ \(  _ \/  \(    \/ __)(_  _)/ __)
+ ) __/ )   (  O )) D ( (__   )(  \__ \
+(__)  (__\_)\__/(____/\___) (__) (___/
+</pre
+                    >
                     <h3>Project 1: [PROJECT NAME]</h3>
                     <p>[PROJECT DESCRIPTION]</p>
                     <p>Technologies: [TECH STACK]</p>
@@ -105,15 +131,16 @@
                     <p>[PROJECT DESCRIPTION]</p>
                     <p>Technologies: [TECH STACK]</p>
                     <p>Link: <a href="#">View Project</a></p>
-
-                    <h3>Project 3: [PROJECT NAME]</h3>
-                    <p>[PROJECT DESCRIPTION]</p>
-                    <p>Technologies: [TECH STACK]</p>
-                    <p>Link: <a href="#">View Project</a></p>
                 </div>
 
                 <div id="skills" class="hidden">
-                    <h2>Technical Skills</h2>
+                    <pre class="ascii-art">
+ ___  __  __  __  __    __    ___ 
+/ __)(  )/  \(  )(  )  (  )  / __)
+\__ \ )((  O ))( / (_/\ )(__ \__ \
+(___/(__)\__/(____)\____/(____)(___/
+</pre
+                    >
                     <p>Programming Languages: C++, JavaScript, PHP</p>
                     <p>
                         Tools & Technologies: WordPress, Shopify, VS Code,
@@ -126,7 +153,13 @@
                 </div>
 
                 <div id="contact" class="hidden">
-                    <h2>Contact Information</h2>
+                    <pre class="ascii-art">
+  ___  __  _  _  ____  __    ___  ____ 
+ / __)/  \( \( )(_  _)/ _\  / __)(_  _)
+( (__(  O ))  (   )( /    \( (__   )(  
+ \___)\__/(_)\_) (__)\_/\_/ \___) (__) 
+</pre
+                    >
                     <p>Email: sakibsnaz@gmail.com</p>
                     <p>GitHub: https://github.com/nazsakib</p>
                     <p>LinkedIn: https://www.linkedin.com/in/sakibsnaz/</p>
