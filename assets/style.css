@@ -182,12 +182,28 @@ h3 {
     animation: blink 1s infinite;
 }
 
+/* In assets/style.css */
 .typing {
-    overflow: hidden;
+    display: inline-block;
     border-right: 2px solid #33ff33;
+    /* The cursor */
     white-space: nowrap;
     margin: 0;
-    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    /* Removed the 'typing' animation, kept only the blink */
+    animation: blink-caret 0.75s step-end infinite;
+}
+
+/* Make sure the blinking caret animation still exists */
+@keyframes blink-caret {
+
+    from,
+    to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: #33ff33
+    }
 }
 
 @keyframes typing {
@@ -335,4 +351,49 @@ h3 {
     color: #ff3333;
     /* Matrix Red */
     text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+}
+
+/* Add to assets/style.css */
+
+/* Utility to hide elements but keep them in the DOM */
+.transparent {
+    opacity: 0;
+}
+
+/* Smooth fade in animation */
+.fade-in-text {
+    animation: fadeIn 1.5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fast line-by-line stream effect */
+.stream-text {
+    opacity: 0;
+    /* Start hidden */
+    animation: streamIn 0.3s forwards;
+    /* Quick reveal */
+}
+
+@keyframes streamIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        /* Slide down slightly */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

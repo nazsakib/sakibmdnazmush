@@ -9,153 +9,168 @@ document.addEventListener("DOMContentLoaded", () => {
     const redPill = document.querySelector(".red-pill");
     const exitMessage = document.getElementById("exit-message");
 
-    // Matrix intro text
+    // --- PART 1: MATRIX INTRO QUOTE (Restored) ---
     const matrixQuote =
         "This is your last chance. After this, there is no turning back. You take the blue pill—the story ends, you wake up in your bed and believe whatever you want to believe. You take the red pill—you stay in Wonderland, and I show you how deep the rabbit hole goes. Remember, all I'm offering is the truth—nothing more.";
 
-    // Display Matrix quote with typewriter effect
     let i = 0;
     const typeWriter = () => {
         if (i < matrixQuote.length) {
             quoteContainer.textContent += matrixQuote.charAt(i);
             i++;
-            setTimeout(typeWriter, 30); // Adjust typing speed here
+            setTimeout(typeWriter, 30); // Typing speed
         } else {
-            // Show pill choices after quote is fully displayed
+            // Show pill choices after quote is done
             setTimeout(() => {
                 pillChoice.style.display = "flex";
             }, 500);
         }
     };
 
-    // Start the typewriter effect
+    // Start the intro immediately
     typeWriter();
 
-    // Blue pill: 10s Total Countdown (7s Text + 3s Big Numbers)
+    // --- PART 2: BLUE PILL (10s Countdown: 7s Text + 3s Big Numbers) ---
     bluePill.addEventListener("click", () => {
-        // 1. Start fade out
         matrixIntro.classList.add("matrix-fade");
 
-        // 2. Wait 2 seconds for fade animation, then start sequence
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             exitMessage.classList.remove("hidden");
 
-            // --- COUNTDOWN LOGIC ---
-            let timeLeft = 10; // Start at 10 total seconds
+            let timeLeft = 10;
             const countdownSpan = document.getElementById("countdown");
 
-            // Update function
             const updateTimer = () => {
-                timeLeft--; // Decrease time
+                timeLeft--;
 
                 if (timeLeft > 3) {
-                    // PHASE 1: Update the small text (Seconds 9 to 4)
+                    // Phase 1: Small text countdown (10-4)
                     if (countdownSpan) countdownSpan.innerText = timeLeft;
                 } else if (timeLeft === 3) {
-                    // PHASE 2: Switch to BIG Matrix Numbers (Seconds 3)
-                    exitMessage.innerHTML = ""; // Clear the reading text
-
+                    // Phase 2: Switch to BIG numbers (3)
+                    exitMessage.innerHTML = ""; // Clear text
                     const bigNumber = document.createElement("div");
                     bigNumber.className = "big-countdown";
-                    bigNumber.id = "big-count"; // Add ID to find it later
+                    bigNumber.id = "big-count";
                     bigNumber.innerText = timeLeft;
                     exitMessage.appendChild(bigNumber);
                 } else if (timeLeft > 0) {
-                    // Continue BIG Countdown (Seconds 2 to 1)
+                    // Big numbers (2-1)
                     const bigNumber = document.getElementById("big-count");
                     if (bigNumber) bigNumber.innerText = timeLeft;
                 } else {
-                    // Time is up (0) - Close
+                    // Time up (0)
                     clearInterval(timer);
                     try {
                         window.close();
-                    } catch (e) {
-                        console.log("Browser prevented close");
-                    }
+                    } catch (e) {}
                     window.location.href = "about:blank";
                 }
             };
 
-            // Run the timer every 1 second
             const timer = setInterval(updateTimer, 1000);
         }, 2000);
     });
-    // // Blue pill: show exit message, wait, then show BIG countdown
-    // bluePill.addEventListener("click", () => {
-    //     // 1. Start the fade out animation
-    //     matrixIntro.classList.add("matrix-fade");
 
-    //     // 2. Wait 2 seconds for fade to finish, then show the text
-    //     setTimeout(() => {
-    //         matrixIntro.classList.add("hidden");
-    //         exitMessage.classList.remove("hidden");
-
-    //         // 3. Wait 2 MORE seconds (reading time), then switch to BIG countdown
-    //         setTimeout(() => {
-    //             // Clear the "You chose blue pill" text completely
-    //             exitMessage.innerHTML = "";
-
-    //             // Create the big number element
-    //             const bigNumber = document.createElement("div");
-    //             bigNumber.className = "big-countdown";
-    //             bigNumber.innerText = "3";
-    //             exitMessage.appendChild(bigNumber);
-
-    //             // Start the countdown logic
-    //             let timeLeft = 10;
-    //             const timer = setInterval(() => {
-    //                 timeLeft--;
-
-    //                 if (timeLeft > 0) {
-    //                     // Update the big number
-    //                     bigNumber.innerText = timeLeft;
-    //                 } else {
-    //                     // Time is up (0) - Stop timer and close
-    //                     clearInterval(timer);
-
-    //                     try {
-    //                         window.close();
-    //                     } catch (e) {
-    //                         console.log("Browser prevented close");
-    //                     }
-    //                     window.location.href = "about:blank";
-    //                 }
-    //             }, 1000); // Update every 1 second
-    //         }, 7000); // 2-second delay before countdown starts
-    //     }, 2000); // 2-second delay for fade out
-    // });
-
-    // Red pill: proceed to terminal
+    // --- PART 3: RED PILL (Smooth Terminal Boot) ---
     redPill.addEventListener("click", () => {
         matrixIntro.classList.add("matrix-fade");
+
         setTimeout(() => {
             matrixIntro.classList.add("hidden");
             terminal.classList.remove("hidden");
-            commandInput.focus();
+
+            // Setup: Clear output and hide prompt
+            const outputDiv = document.getElementById("output");
+            const commandLine = document.querySelector(".command-line");
+            outputDiv.innerHTML = "";
+            commandLine.classList.add("transparent");
+
+            // Type Header
+            const welcomeText = "WELCOME TO MY PORTFOLIO";
+            const typeDelay = 80;
+
+            const line1 = document.createElement("div");
+            line1.className = "typing";
+            outputDiv.appendChild(line1);
+
+            let charIndex = 0;
+            const typeInterval = setInterval(() => {
+                line1.textContent += welcomeText.charAt(charIndex);
+                charIndex++;
+
+                if (charIndex >= welcomeText.length) {
+                    clearInterval(typeInterval);
+                    line1.classList.remove("typing");
+                    line1.style.borderRight = "none";
+
+                    // Fade in subtitle
+                    setTimeout(() => {
+                        const line2 = document.createElement("p");
+                        line2.innerHTML =
+                            "Type <strong>help</strong> to see available commands.";
+                        line2.className = "fade-in-text";
+                        outputDiv.appendChild(line2);
+
+                        // Fade in Prompt
+                        setTimeout(() => {
+                            commandLine.classList.remove("transparent");
+                            commandLine.classList.add("fade-in-text");
+                            commandInput.focus();
+                        }, 800);
+                    }, 300);
+                }
+            }, typeDelay);
         }, 3000);
     });
 
-    // Focus input when clicking anywhere on terminal
-    terminal.addEventListener("click", () => {
-        commandInput.focus();
-    });
-
-    // Process terminal commands
-    // --- NEW: Command History Storage ---
+    // --- PART 4: TERMINAL LOGIC (Streaming Text + History) ---
     let commandHistory = [];
     let historyIndex = -1;
+    let isPrinting = false;
 
-    // Process terminal commands
+    // Helper: Stream text line-by-line
+    const renderLineByLine = (sourceId, targetContainer) => {
+        const sourceElement = document.getElementById(sourceId);
+        if (!sourceElement) return 0;
+
+        const lines = Array.from(sourceElement.children);
+        let delay = 0;
+        const lineDelay = 150;
+
+        lines.forEach((line) => {
+            setTimeout(() => {
+                const clone = line.cloneNode(true);
+                clone.classList.add("stream-text");
+                targetContainer.appendChild(clone);
+                window.scrollTo(0, document.body.scrollHeight);
+            }, delay);
+            delay += lineDelay;
+        });
+
+        return delay;
+    };
+
+    // Focus input on click
+    terminal.addEventListener("click", () => {
+        if (!isPrinting) commandInput.focus();
+    });
+
+    // Command Processing
     commandInput.addEventListener("keydown", function (event) {
-        // Feature 1: Command History (Up/Down Arrows)
+        if (isPrinting) {
+            event.preventDefault();
+            return;
+        }
+
         if (event.key === "ArrowUp") {
             if (historyIndex < commandHistory.length - 1) {
                 historyIndex++;
                 this.value =
                     commandHistory[commandHistory.length - 1 - historyIndex];
             }
-            event.preventDefault(); // Stop cursor from moving to start
+            event.preventDefault();
         } else if (event.key === "ArrowDown") {
             if (historyIndex > 0) {
                 historyIndex--;
@@ -165,108 +180,66 @@ document.addEventListener("DOMContentLoaded", () => {
                 historyIndex = -1;
                 this.value = "";
             }
-        }
-        // Feature 2: Execute Command (Enter)
-        else if (event.key === "Enter") {
+        } else if (event.key === "Enter") {
             const command = this.value.trim().toLowerCase();
 
-            // Save to history (if not empty)
             if (command) {
                 commandHistory.push(command);
-                historyIndex = -1; // Reset history index
+                historyIndex = -1;
             }
 
             const response = document.createElement("div");
+            response.className = "command-response";
 
-            // Echo command with proper alignment
             const commandEcho = document.createElement("div");
             commandEcho.classList.add("command-echo");
             commandEcho.innerHTML = `<span class="prompt">guest@portfolio:~$</span><span class="command-text">${command}</span>`;
             output.appendChild(commandEcho);
+            output.appendChild(response);
 
-            // Process command
-            if (command === "help") {
-                const helpContent = document
-                    .getElementById("help")
-                    .cloneNode(true);
-                helpContent.classList.remove("hidden");
-                response.appendChild(helpContent);
-            } else if (command === "about") {
-                const aboutContent = document
-                    .getElementById("about")
-                    .cloneNode(true);
-                aboutContent.classList.remove("hidden");
-                response.appendChild(aboutContent);
-            } else if (command === "projects") {
-                const projectsContent = document
-                    .getElementById("projects")
-                    .cloneNode(true);
-                projectsContent.classList.remove("hidden");
-                response.appendChild(projectsContent);
-            } else if (command === "skills") {
-                const skillsContent = document
-                    .getElementById("skills")
-                    .cloneNode(true);
-                skillsContent.classList.remove("hidden");
-                response.appendChild(skillsContent);
-            } else if (command === "contact") {
-                const contactContent = document
-                    .getElementById("contact")
-                    .cloneNode(true);
-                contactContent.classList.remove("hidden");
-                response.appendChild(contactContent);
+            this.value = "";
+
+            // Commands
+            if (
+                ["help", "about", "projects", "skills", "contact"].includes(
+                    command,
+                )
+            ) {
+                isPrinting = true;
+                const totalTime = renderLineByLine(command, response);
+                setTimeout(() => {
+                    isPrinting = false;
+                    commandInput.focus();
+                }, totalTime);
             } else if (command === "clear") {
-                while (output.firstChild) {
-                    output.removeChild(output.firstChild);
-                }
+                output.innerHTML = "";
             } else if (command === "resume" || command === "download") {
-                // Feature 3: Download Resume
                 response.innerHTML =
-                    "<p>Initiating download sequence...</p><p>Downloading <strong>sakib_resume.pdf</strong>...</p>";
-
-                // Create invisible link to trigger download
-                const link = document.createElement("a");
-                link.href = "assets/sakib_resume.pdf"; // Make sure you upload this file!
-                link.download = "Sakib_Nazmush_Resume.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else if (command === "message") {
+                    "<p class='stream-text'>Initiating download sequence...</p><p class='stream-text' style='animation-delay: 0.5s'>Downloading <strong>sakib_resume.pdf</strong>...</p>";
+                setTimeout(() => {
+                    const link = document.createElement("a");
+                    link.href = "assets/sakib_resume.pdf";
+                    link.download = "Sakib_Nazmush_Resume.pdf";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, 1000);
+            } else if (command === "exit") {
+                isPrinting = true;
                 response.innerHTML =
-                    "<p>Message functionality would be implemented here with a form.</p>";
-            } else if (command === "sudo") {
-                // Easter Egg
-                response.innerHTML =
-                    "<p class='error'>Permission denied: You are not the One.</p>";
-            } else if (command === "") {
-                // Do nothing for empty command
-            }
-            // Add this inside the command processing block in script.js
-            // Place it right before the final "else { command not found }" block
-            else if (command === "exit") {
-                // 1. Show a logout message
-                response.innerHTML =
-                    "<p>Terminating session...</p><p>Logging out guest user...</p>";
-
-                // 2. Wait 1 second, then close
+                    "<p class='stream-text'>Terminating session...</p><p class='stream-text' style='animation-delay: 0.8s'>Logging out guest user...</p>";
                 setTimeout(() => {
                     try {
                         window.close();
-                    } catch (e) {
-                        console.log("Browser prevented close");
-                    }
-                    window.location.href = "about:blank"; // Fallback to blank page
-                }, 1000);
-            }
-            // ... existing code continues ...
-            else {
-                response.innerHTML = `<p class='error'>Command not found: ${command}. Type 'help' for available commands.</p>`;
+                    } catch (e) {}
+                    window.location.href = "about:blank";
+                }, 2000);
+            } else if (command === "") {
+                // Do nothing
+            } else {
+                response.innerHTML = `<p class='error stream-text'>Command not found: ${command}. Type 'help' for available commands.</p>`;
             }
 
-            output.appendChild(response);
-
-            // Clear input and scroll to bottom
-            this.value = "";
             window.scrollTo(0, document.body.scrollHeight);
         }
     });
