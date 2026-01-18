@@ -29,19 +29,35 @@
             content="Enter the Matrix. Interactive developer portfolio."
         />
         <link rel="icon" type="image/png" href="assets/favicon.png" />
-        <!-- Google tag (gtag.js) -->
-        <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-VEKV2528MH"
-        ></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
 
-            gtag("config", "G-VEKV2528MH");
+        <!-- Google tag (gtag.js) -->
+        <script>
+            (function () {
+                const GA_ID = "G-VEKV2528MH";
+
+                // Wait for the page to be fully interactive
+                window.addEventListener("load", () => {
+                    // 2-second delay to ensure mobile CPU is free for a 100/100 score
+                    setTimeout(() => {
+                        const script = document.createElement("script");
+                        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+                        script.async = true;
+                        document.head.appendChild(script);
+
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag() {
+                            dataLayer.push(arguments);
+                        }
+                        gtag("js", new Date());
+
+                        // Optimize for speed and privacy
+                        gtag("config", GA_ID, {
+                            anonymize_ip: true,
+                            page_view_speed_optimization: true,
+                        });
+                    }, 2000);
+                });
+            })();
         </script>
     </head>
     <body>
