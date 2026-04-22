@@ -565,3 +565,153 @@ h3 {
     transition: opacity 2.0s ease-out;
     /* Slow 2-second fade */
 }
+
+/* OS Window Frame */
+.draggable-window {
+    background-color: rgba(13, 13, 13, 0.85);
+    border: 1px solid var(--primary-color, rgba(51, 255, 51, 0.5));
+    border-radius: 8px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+.window-header {
+    background: #1a1a1a;
+    border-bottom: 1px solid var(--primary-color, rgba(51, 255, 51, 0.3));
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-buttons {
+    display: flex;
+    gap: 8px;
+    margin-right: 15px;
+}
+
+.window-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.window-btn.red { background-color: #ff5f56; }
+.window-btn.yellow { background-color: #ffbd2e; }
+.window-btn.green { background-color: #27c93f; }
+
+.window-title {
+    color: var(--primary-color, #33ff33);
+    font-size: 14px;
+    font-family: "Courier New", monospace;
+    opacity: 0.8;
+    margin: 0 auto;
+    padding-right: 40px; /* Balance buttons */
+}
+
+#terminal {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: calc(90vh - 40px);
+}
+
+/* Virtual Keyboard */
+#virtual-keyboard {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #111;
+    padding: 10px 5px;
+    box-sizing: border-box;
+    z-index: 2000;
+    border-top: 1px solid var(--primary-color, #33ff33);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vk-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.vk-key {
+    background: #222;
+    border: 1px solid var(--primary-color, #33ff33);
+    color: var(--primary-color, #33ff33);
+    font-family: monospace;
+    font-size: 18px;
+    padding: 12px 0;
+    flex: 1;
+    max-width: 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: lowercase;
+}
+
+.vk-key:active {
+    background: var(--primary-color, #33ff33);
+    color: #000;
+}
+
+.vk-wide {
+    flex: 2;
+    max-width: none;
+}
+.vk-enter {
+    background: var(--primary-color, #33ff33);
+    color: #000;
+    font-weight: bold;
+}
+
+@media (min-width: 768px) {
+    #virtual-keyboard { display: none !important; }
+}
+
+/* Snake Game */
+#snake-board {
+    display: block;
+    margin: 20px auto;
+    border: 1px solid var(--primary-color, #33ff33);
+    background: #000;
+}
+
+/* Theming Support via CSS Variables */
+:root {
+    --primary-color: #33ff33;
+}
+body {
+    color: var(--primary-color);
+    text-shadow: 0 0 2px rgba(0,0,0,0.5), 0 0 5px var(--primary-color), 0 0 10px rgba(51, 255, 51, 0.4);
+}
+input, .prompt, h1, h2, h3, a, .cursor, .typed-cursor, .typing {
+    color: var(--primary-color);
+    caret-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.big-countdown {
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color);
+}
+.ascii-art {
+    color: var(--primary-color);
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+}

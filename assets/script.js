@@ -9,10 +9,42 @@ document.addEventListener("DOMContentLoaded", () => {
     const redPill = document.querySelector(".red-pill");
     const exitMessage = document.getElementById("exit-message");
 
-    // --- SETUP: SOUND EFFECTS ---
-    // Ensure you have 'keypress.mp3' in your assets folder
-    const keySound = new Audio("assets/keypress.mp3");
-    keySound.volume = 0.3; // Adjust volume (0.0 to 1.0)
+    // --- SETUP: SOUND EFFECTS (Web Audio API) ---
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let isMuted = false;
+
+    const initAudio = () => {
+        if (!audioCtx) {
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    };
+
+    const playKeystroke = (isEnter = false) => {
+        if (isMuted) return;
+        initAudio();
+        
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = isEnter ? 'triangle' : 'square';
+        // Randomize pitch slightly for realism
+        const baseFreq = isEnter ? 150 : 300;
+        oscillator.frequency.setValueAtTime(baseFreq + (Math.random() * 50 - 25), audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (isEnter ? 0.15 : 0.05));
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + (isEnter ? 0.15 : 0.05));
+    };
     // --- SETUP: MATRIX RAIN EFFECT ---
     const canvas = document.getElementById("matrix-rain");
     const ctx = canvas.getContext("2d");
@@ -120,6 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- NEW: BOOT SEQUENCE LOGIC ---
     const runBootSequence = (isReturningUser = false) => {
         matrixIntro.classList.add("hidden");
+        const windowFrame = document.getElementById("terminal-window");
+        if (windowFrame) windowFrame.classList.remove("hidden");
         terminal.classList.remove("hidden");
 
         const outputDiv = document.getElementById("output");
@@ -272,9 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 1. Play Typing Sound
-        // Clone node allows overlapping sounds for fast typing
-        const soundClone = keySound.cloneNode();
-        soundClone.play().catch(() => {}); // Catch errors if browser blocks autoplay
+        playKeystroke(event.key === "Enter");
 
         // 2. Tab Autocomplete
         if (event.key === "Tab") {
@@ -295,7 +327,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 "ask",
                 "mute",
                 "unmute",
-                "hack"
+                "hack",
+                "theme",
+                "play"
             ];
             const match = availableCommands.find((cmd) =>
                 cmd.startsWith(currentInput),
@@ -488,11 +522,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     }, lineDelay);
                 }
             } else if (command === "mute") {
-                keySound.volume = 0;
+                isMuted = true;
                 response.innerHTML =
                     "<p class='stream-text'>Audio output: <span style='color:red'>MUTED</span></p>";
             } else if (command === "unmute") {
-                keySound.volume = 0.3;
+                isMuted = false;
                 response.innerHTML =
                     "<p class='stream-text'>Audio output: <span style='color:#33ff33'>ENABLED</span></p>";
             } else if (command.startsWith("ask ")) {
@@ -532,11 +566,42 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p class='stream-text'>System Status: ONLINE</p>
                     <p class='stream-text'>Browser Agent: ${navigator.userAgent.substring(0, 50)}...</p>
                 `;
+            } else if (command.startsWith("theme ")) {
+                const themeName = command.replace("theme ", "").trim();
+                const root = document.documentElement;
+                document.body.style.backgroundColor = ""; // Reset in case light mode was active
+                if (themeName === "cyberpunk") {
+                    root.style.setProperty('--primary-color', '#ff00ff');
+                    matrixColor = "#ffff00";
+                    response.innerHTML = "<p class='stream-text' style='color:#ff00ff'>Theme changed to Cyberpunk.</p>";
+                } else if (themeName === "dracula") {
+                    root.style.setProperty('--primary-color', '#bd93f9');
+                    matrixColor = "#8be9fd";
+                    response.innerHTML = "<p class='stream-text' style='color:#bd93f9'>Theme changed to Dracula.</p>";
+                } else if (themeName === "hacker") {
+                    root.style.setProperty('--primary-color', '#33ff33');
+                    matrixColor = "#0F0";
+                    response.innerHTML = "<p class='stream-text' style='color:#33ff33'>Theme changed to Hacker.</p>";
+                } else if (themeName === "light") {
+                    root.style.setProperty('--primary-color', '#000000');
+                    document.body.style.backgroundColor = "#ffffff";
+                    matrixColor = "#000000";
+                    response.innerHTML = "<p class='stream-text' style='color:#ff0000'>Warning: Retinas damaged. Light mode is a crime.</p>";
+                } else {
+                    response.innerHTML = "<p class='stream-text'>Available themes: hacker, cyberpunk, dracula, light.</p>";
+                }
+            } else if (command === "theme") {
+                response.innerHTML = "<p class='stream-text'>Usage: theme &lt;name&gt;. Available themes: hacker, cyberpunk, dracula, light.</p>";
+            } else if (command === "play snake") {
+                output.innerHTML = "";
+                startSnakeGame(output);
+            } else if (command === "play") {
+                response.innerHTML = "<p class='stream-text'>Usage: play &lt;game&gt;. Available games: snake.</p>";
             } else if (['ls', 'cd', 'pwd', 'mkdir', 'rm', 'cat', 'echo', 'grep'].includes(command.split(" ")[0])) {
                 response.innerHTML = `<p class='error stream-text'>Access denied. Core Linux commands are restricted for guest users.</p>`;
             } else {
                 // Typo check (Levenshtein Distance)
-                const availableCommands = ["help", "about", "projects", "skills", "contact", "clear", "resume", "message", "exit", "hack", "github", "status", "ask", "mute", "unmute"];
+                const availableCommands = ["help", "about", "projects", "skills", "contact", "clear", "resume", "message", "exit", "hack", "github", "status", "ask", "mute", "unmute", "theme", "play"];
                 let closestMatch = null;
                 let smallestDist = 3; // Max threshold
                 
@@ -583,4 +648,167 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 200 + Math.random() * 300);
         }
     }, 5000);
+
+    // --- DRAGGABLE WINDOW LOGIC ---
+    const windowFrame = document.getElementById("terminal-window");
+    const windowHeader = document.getElementById("window-titlebar");
+    let isDragging = false;
+    let dragStartX, dragStartY;
+
+    if (windowHeader && windowFrame) {
+        windowHeader.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            dragStartX = e.clientX - windowFrame.offsetLeft;
+            dragStartY = e.clientY - windowFrame.offsetTop;
+            windowHeader.style.cursor = "grabbing";
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            windowFrame.style.left = `${e.clientX - dragStartX}px`;
+            windowFrame.style.top = `${e.clientY - dragStartY}px`;
+            windowFrame.style.transform = "none"; // Remove centering transform once dragged
+        });
+
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            windowHeader.style.cursor = "grab";
+        });
+        
+        // Touch support
+        windowHeader.addEventListener("touchstart", (e) => {
+            isDragging = true;
+            dragStartX = e.touches[0].clientX - windowFrame.offsetLeft;
+            dragStartY = e.touches[0].clientY - windowFrame.offsetTop;
+        });
+        document.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            windowFrame.style.left = `${e.touches[0].clientX - dragStartX}px`;
+            windowFrame.style.top = `${e.touches[0].clientY - dragStartY}px`;
+            windowFrame.style.transform = "none";
+        });
+        document.addEventListener("touchend", () => { isDragging = false; });
+    }
+
+    // --- VIRTUAL KEYBOARD LOGIC ---
+    const virtualKeyboard = document.getElementById("virtual-keyboard");
+    const vkKeys = document.querySelectorAll(".vk-key");
+    if (virtualKeyboard && vkKeys) {
+        // Show VK when terminal input is focused on mobile
+        commandInput.addEventListener("focus", () => {
+            if (window.innerWidth < 768) {
+                virtualKeyboard.classList.remove("hidden");
+                // adjust window size to make room for keyboard
+                windowFrame.style.maxHeight = "50vh";
+                windowFrame.style.top = "5%";
+                windowFrame.style.transform = "none";
+            }
+        });
+        
+        vkKeys.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault(); // Prevent input blur
+                const key = btn.innerText;
+                
+                if (btn.id === "vk-backspace") {
+                    commandInput.value = commandInput.value.slice(0, -1);
+                } else if (btn.id === "vk-enter") {
+                    commandInput.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+                } else if (btn.id === "vk-space") {
+                    commandInput.value += " ";
+                } else {
+                    commandInput.value += key;
+                }
+                playKeystroke(btn.id === "vk-enter");
+                commandInput.focus();
+            });
+        });
+    }
+
+    // --- ASCII SNAKE GAME LOGIC ---
+    function startSnakeGame(container) {
+        isPrinting = true;
+        commandInput.disabled = true;
+        
+        const width = 20;
+        const height = 10;
+        let snake = [{x: 5, y: 5}];
+        let dir = {x: 1, y: 0};
+        let food = {x: 15, y: 5};
+        let score = 0;
+        let gameLoop;
+        
+        const board = document.createElement("pre");
+        board.className = "ascii-art";
+        board.id = "snake-board";
+        
+        const instructions = document.createElement("p");
+        instructions.className = "stream-text";
+        instructions.innerHTML = "Use <strong>W, A, S, D</strong> or Arrow Keys to move. Press <strong>Q</strong> to quit.";
+        
+        container.appendChild(instructions);
+        container.appendChild(board);
+        
+        const draw = () => {
+            let grid = "";
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    if (x === food.x && y === food.y) grid += "★";
+                    else if (snake.some(segment => segment.x === x && segment.y === y)) {
+                        grid += (snake[0].x === x && snake[0].y === y) ? "█" : "▒";
+                    }
+                    else grid += "·";
+                }
+                grid += "\n";
+            }
+            board.innerText = `Score: ${score}\n\n${grid}`;
+        };
+        
+        const gameOver = () => {
+            clearInterval(gameLoop);
+            board.innerText += "\nGAME OVER. Final Score: " + score;
+            setTimeout(() => {
+                isPrinting = false;
+                commandInput.disabled = false;
+                commandInput.focus();
+                document.removeEventListener("keydown", snakeKeyHandler);
+            }, 1500);
+        };
+        
+        const update = () => {
+            const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+            
+            // Wall Collision
+            if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height) return gameOver();
+            // Self Collision
+            if (snake.some(segment => segment.x === head.x && segment.y === head.y)) return gameOver();
+            
+            snake.unshift(head);
+            
+            if (head.x === food.x && head.y === food.y) {
+                score += 10;
+                playKeystroke();
+                food = {
+                    x: Math.floor(Math.random() * width),
+                    y: Math.floor(Math.random() * height)
+                };
+            } else {
+                snake.pop();
+            }
+            draw();
+        };
+        
+        const snakeKeyHandler = (e) => {
+            if (['ArrowUp', 'w'].includes(e.key) && dir.y === 0) dir = {x: 0, y: -1};
+            else if (['ArrowDown', 's'].includes(e.key) && dir.y === 0) dir = {x: 0, y: 1};
+            else if (['ArrowLeft', 'a'].includes(e.key) && dir.x === 0) dir = {x: -1, y: 0};
+            else if (['ArrowRight', 'd'].includes(e.key) && dir.x === 0) dir = {x: 1, y: 0};
+            else if (e.key === 'q') {
+                gameOver();
+            }
+        };
+        
+        document.addEventListener("keydown", snakeKeyHandler);
+        gameLoop = setInterval(update, 200);
+    }
 });

@@ -79,17 +79,27 @@
                 </div>
             </div>
 
-            <div id="terminal" class="hidden">
-                <div id="output"></div>
+            <div id="terminal-window" class="hidden draggable-window">
+                <div id="window-titlebar" class="window-header">
+                    <div class="window-buttons">
+                        <span class="window-btn red"></span>
+                        <span class="window-btn yellow"></span>
+                        <span class="window-btn green"></span>
+                    </div>
+                    <span class="window-title">bash - guest@portfolio</span>
+                </div>
+                <div id="terminal">
+                    <div id="output"></div>
 
-                <div class="command-line">
-                    <span class="prompt">guest@portfolio:~$</span>
-                    <input
-                        type="text"
-                        id="command-input"
-                        autocomplete="off"
-                        autofocus
-                    />
+                    <div class="command-line">
+                        <span class="prompt">guest@portfolio:~$</span>
+                        <input
+                            type="text"
+                            id="command-input"
+                            autocomplete="off"
+                            autofocus
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -232,6 +242,21 @@
                 The page will automatically close in
                 <span id="countdown">10</span> seconds...
             </p>
+        </div>
+
+        <div id="virtual-keyboard" class="hidden">
+            <div class="vk-row">
+                <button class="vk-key">q</button><button class="vk-key">w</button><button class="vk-key">e</button><button class="vk-key">r</button><button class="vk-key">t</button><button class="vk-key">y</button><button class="vk-key">u</button><button class="vk-key">i</button><button class="vk-key">o</button><button class="vk-key">p</button>
+            </div>
+            <div class="vk-row">
+                <button class="vk-key">a</button><button class="vk-key">s</button><button class="vk-key">d</button><button class="vk-key">f</button><button class="vk-key">g</button><button class="vk-key">h</button><button class="vk-key">j</button><button class="vk-key">k</button><button class="vk-key">l</button>
+            </div>
+            <div class="vk-row">
+                <button class="vk-key">z</button><button class="vk-key">x</button><button class="vk-key">c</button><button class="vk-key">v</button><button class="vk-key">b</button><button class="vk-key">n</button><button class="vk-key">m</button><button class="vk-key vk-wide" id="vk-backspace">Bksp</button>
+            </div>
+            <div class="vk-row">
+                <button class="vk-key vk-wide" id="vk-space">Space</button><button class="vk-key vk-enter" id="vk-enter">Enter</button>
+            </div>
         </div>
 
         <script src="assets/script.js"></script>
