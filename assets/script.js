@@ -580,16 +580,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     root.style.setProperty('--primary-color', '#33ff33');
                     matrixColor = "#0F0";
                     response.innerHTML = "<p class='stream-text' style='color:#33ff33'>Theme changed to Hacker.</p>";
-                } else if (themeName === "light") {
-                    root.style.setProperty('--primary-color', '#000000');
-                    document.body.style.backgroundColor = "#ffffff";
-                    matrixColor = "#000000";
-                    response.innerHTML = "<p class='stream-text' style='color:#ff0000'>Warning: Retinas damaged. Light mode is a crime.</p>";
                 } else {
-                    response.innerHTML = "<p class='stream-text'>Available themes: hacker, cyberpunk, dracula, light.</p>";
+                    response.innerHTML = "<p class='stream-text'>Available themes: hacker, cyberpunk, dracula.</p>";
                 }
             } else if (command === "theme") {
-                response.innerHTML = "<p class='stream-text'>Usage: theme &lt;name&gt;. Available themes: hacker, cyberpunk, dracula, light.</p>";
+                response.innerHTML = "<p class='stream-text'>Usage: theme &lt;name&gt;. Available themes: hacker, cyberpunk, dracula.</p>";
             } else if (command === "play snake") {
                 output.innerHTML = "";
                 startSnakeGame(output);
