@@ -49,7 +49,7 @@ Welcome to the **Terminal Matrix Portfolio**—not just a static resume, but a f
 ### 📱 Superior UX Engineering
 - **Procedural Synthesized Audio:** Instead of overlapping audio files, every keystroke is dynamically synthesized using the **Web Audio API** with randomized pitches for true mechanical keyboard realism.
 - **Mobile Hacker Keyboard:** On mobile devices, the native keyboard is bypassed in favor of a sleek, custom on-screen hacker keyboard, preventing layout-breaking zoom issues.
-- **State Persistence:** Uses `localStorage` to remember returning visitors, automatically skipping the intro and welcoming them back.
+- **State Persistence:** Utilizes browser `localStorage` to intelligently remember returning visitors. A second visit from the same browser automatically bypasses the initial welcome screen and cinematic boot sequence, directly loading the terminal environment with a personalized *"Welcome back"* message for an optimized user experience.
 
 ---
 
