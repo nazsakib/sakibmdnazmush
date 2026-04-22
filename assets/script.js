@@ -152,8 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- NEW: BOOT SEQUENCE LOGIC ---
     const runBootSequence = (isReturningUser = false) => {
         matrixIntro.classList.add("hidden");
-        const windowFrame = document.getElementById("terminal-window");
-        if (windowFrame) windowFrame.classList.remove("hidden");
         terminal.classList.remove("hidden");
 
         const outputDiv = document.getElementById("output");
@@ -649,47 +647,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, 5000);
 
-    // --- DRAGGABLE WINDOW LOGIC ---
-    const windowFrame = document.getElementById("terminal-window");
-    const windowHeader = document.getElementById("window-titlebar");
-    let isDragging = false;
-    let dragStartX, dragStartY;
-
-    if (windowHeader && windowFrame) {
-        windowHeader.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            dragStartX = e.clientX - windowFrame.offsetLeft;
-            dragStartY = e.clientY - windowFrame.offsetTop;
-            windowHeader.style.cursor = "grabbing";
-        });
-
-        document.addEventListener("mousemove", (e) => {
-            if (!isDragging) return;
-            windowFrame.style.left = `${e.clientX - dragStartX}px`;
-            windowFrame.style.top = `${e.clientY - dragStartY}px`;
-            windowFrame.style.transform = "none"; // Remove centering transform once dragged
-        });
-
-        document.addEventListener("mouseup", () => {
-            isDragging = false;
-            windowHeader.style.cursor = "grab";
-        });
-        
-        // Touch support
-        windowHeader.addEventListener("touchstart", (e) => {
-            isDragging = true;
-            dragStartX = e.touches[0].clientX - windowFrame.offsetLeft;
-            dragStartY = e.touches[0].clientY - windowFrame.offsetTop;
-        });
-        document.addEventListener("touchmove", (e) => {
-            if (!isDragging) return;
-            windowFrame.style.left = `${e.touches[0].clientX - dragStartX}px`;
-            windowFrame.style.top = `${e.touches[0].clientY - dragStartY}px`;
-            windowFrame.style.transform = "none";
-        });
-        document.addEventListener("touchend", () => { isDragging = false; });
-    }
-
     // --- VIRTUAL KEYBOARD LOGIC ---
     const virtualKeyboard = document.getElementById("virtual-keyboard");
     const vkKeys = document.querySelectorAll(".vk-key");
@@ -698,10 +655,6 @@ document.addEventListener("DOMContentLoaded", () => {
         commandInput.addEventListener("focus", () => {
             if (window.innerWidth < 768) {
                 virtualKeyboard.classList.remove("hidden");
-                // adjust window size to make room for keyboard
-                windowFrame.style.maxHeight = "50vh";
-                windowFrame.style.top = "5%";
-                windowFrame.style.transform = "none";
             }
         });
         
