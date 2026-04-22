@@ -646,3 +646,37 @@ input, .prompt, h1, h2, h3, a, .cursor, .typed-cursor, .typing {
     color: var(--primary-color);
     text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
 }
+
+/* Hacker Face Animations */
+@keyframes glassesGlint {
+    0%, 90% { color: #fff; text-shadow: none; }
+    95% { color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; }
+    100% { color: #fff; text-shadow: none; }
+}
+.glasses {
+    color: #fff;
+    animation: glassesGlint 4s infinite;
+}
+
+@keyframes mouthSmile1 {
+    0%, 45%, 55%, 100% { opacity: 1; }
+    46%, 54% { opacity: 0; }
+}
+@keyframes mouthSmile2 {
+    0%, 45%, 55%, 100% { opacity: 0; }
+    46%, 54% { opacity: 1; color: #33ff33; }
+}
+.mouth-container {
+    display: inline-grid;
+}
+.mouth-frame1 {
+    grid-area: 1/1;
+    color: var(--primary-color, #33ff33);
+    animation: mouthSmile1 6s infinite;
+}
+.mouth-frame2 {
+    grid-area: 1/1;
+    color: var(--primary-color, #33ff33);
+    opacity: 0;
+    animation: mouthSmile2 6s infinite;
+}

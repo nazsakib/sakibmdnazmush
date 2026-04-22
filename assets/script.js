@@ -1,3 +1,4 @@
+window.sessionStartTime = new Date();
 document.addEventListener("DOMContentLoaded", () => {
     const matrixIntro = document.getElementById("matrix-intro");
     const terminal = document.getElementById("terminal");
@@ -327,7 +328,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 "unmute",
                 "hack",
                 "theme",
-                "play"
+                "play",
+                "whoami"
             ];
             const match = availableCommands.find((cmd) =>
                 cmd.startsWith(currentInput),
@@ -590,11 +592,52 @@ document.addEventListener("DOMContentLoaded", () => {
                 startSnakeGame(output);
             } else if (command === "play") {
                 response.innerHTML = "<p class='stream-text'>Usage: play &lt;game&gt;. Available games: snake.</p>";
+            } else if (command === "whoami") {
+                const asciiFace = `
+    <span style="color:#00ffff">      ██████████     </span>
+    <span style="color:#00ffff">    ██          ██   </span>
+    <span style="color:#00ffff">   ██   <span class="glasses">▄▄</span>  <span class="glasses">▄▄</span>   ██  </span>
+    <span style="color:#00ffff">   ██   <span class="glasses">▀▀</span>  <span class="glasses">▀▀</span>   ██  </span>
+    <span style="color:#00ffff">   ██     <span style="color:#fff">▄</span>      ██  </span>
+    <span style="color:#00ffff">    ██   <span class="mouth-container"><span class="mouth-frame1">▀▀▀▀</span><span class="mouth-frame2">▄▀▀▄</span></span>   ██   </span>
+    <span style="color:#00ffff">      ██████████     </span>
+                `;
+                
+                // Calculate uptime based on when they loaded the page
+                const uptimeDiff = Math.floor((new Date() - window.sessionStartTime) / 1000);
+                const mins = Math.floor(uptimeDiff / 60);
+                const secs = uptimeDiff % 60;
+                
+                response.innerHTML = `
+                    <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px; margin-bottom: 10px;" class="stream-text">
+                        <pre style="margin: 0; line-height: 1.1; font-weight: bold;">${asciiFace}</pre>
+                        <div>
+                            <p style="margin: 0 0 5px 0;"><span style="color: #00ffff; font-weight: bold;">guest</span>@<span style="color: #00ffff; font-weight: bold;">sakib-portfolio</span></p>
+                            <p style="margin: 0;">-------------------------</p>
+                            <p style="margin: 5px 0 0 0;"><span style="color: #33ff33; font-weight: bold;">OS:</span> Matrix/Web</p>
+                            <p style="margin: 0;"><span style="color: #33ff33; font-weight: bold;">Host:</span> Terminal Emulator v2.0</p>
+                            <p style="margin: 0;"><span style="color: #33ff33; font-weight: bold;">Uptime:</span> ${mins} mins, ${secs} secs</p>
+                            <p style="margin: 0;"><span style="color: #33ff33; font-weight: bold;">Shell:</span> bash</p>
+                            <p style="margin: 0;"><span style="color: #33ff33; font-weight: bold;">Role:</span> Technical Support / Developer</p>
+                            <p style="margin: 0;"><span style="color: #33ff33; font-weight: bold;">Coffee Consumed:</span> ∞ cups</p>
+                            <div style="margin-top: 10px; display: flex; gap: 2px;">
+                                <div style="width: 15px; height: 15px; background: #000;"></div>
+                                <div style="width: 15px; height: 15px; background: #f00;"></div>
+                                <div style="width: 15px; height: 15px; background: #0f0;"></div>
+                                <div style="width: 15px; height: 15px; background: #ff0;"></div>
+                                <div style="width: 15px; height: 15px; background: #00f;"></div>
+                                <div style="width: 15px; height: 15px; background: #f0f;"></div>
+                                <div style="width: 15px; height: 15px; background: #0ff;"></div>
+                                <div style="width: 15px; height: 15px; background: #fff;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             } else if (['ls', 'cd', 'pwd', 'mkdir', 'rm', 'cat', 'echo', 'grep'].includes(command.split(" ")[0])) {
                 response.innerHTML = `<p class='error stream-text'>Access denied. Core Linux commands are restricted for guest users.</p>`;
             } else {
                 // Typo check (Levenshtein Distance)
-                const availableCommands = ["help", "about", "projects", "skills", "contact", "clear", "resume", "message", "exit", "hack", "github", "status", "ask", "mute", "unmute", "theme", "play"];
+                const availableCommands = ["help", "about", "projects", "skills", "contact", "clear", "resume", "message", "exit", "hack", "github", "status", "ask", "mute", "unmute", "theme", "play", "whoami"];
                 let closestMatch = null;
                 let smallestDist = 3; // Max threshold
                 
