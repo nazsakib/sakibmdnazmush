@@ -26,7 +26,31 @@ document.addEventListener("DOMContentLoaded", () => {
         "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン";
     const latin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const nums = "0123456789";
-    const alphabet = katakana + latin + nums;
+    let alphabet = katakana + latin + nums;
+
+    // --- NEW: KONAMI CODE LOGIC ---
+    let konamiIndex = 0;
+    let isEmojiMode = false;
+    const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === konamiSequence[konamiIndex]) {
+            konamiIndex++;
+            if (konamiIndex === konamiSequence.length) {
+                konamiIndex = 0;
+                isEmojiMode = !isEmojiMode;
+                if (isEmojiMode) {
+                    alphabet = "🚀💻🔥😎👾🍕🎮🦄";
+                    matrixColor = "#fff"; // Emoji friendly
+                } else {
+                    alphabet = katakana + latin + nums;
+                    matrixColor = "#0F0"; // Default Green
+                }
+            }
+        } else {
+            konamiIndex = 0;
+        }
+    });
 
     const fontSize = 16;
     const columns = canvas.width / fontSize; // Number of columns
@@ -50,10 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ctx.font = fontSize + "px monospace";
 
+        const chars = Array.from(alphabet);
         for (let i = 0; i < rainDrops.length; i++) {
-            const text = alphabet.charAt(
-                Math.floor(Math.random() * alphabet.length),
-            );
+            const text = chars[
+                Math.floor(Math.random() * chars.length)
+            ];
             ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
 
             // Reset drop to top randomly
@@ -91,7 +116,72 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 500);
         }
     };
-    typeWriter();
+
+    // --- NEW: BOOT SEQUENCE LOGIC ---
+    const runBootSequence = (isReturningUser = false) => {
+        matrixIntro.classList.add("hidden");
+        terminal.classList.remove("hidden");
+
+        const outputDiv = document.getElementById("output");
+        const commandLine = document.querySelector(".command-line");
+        outputDiv.innerHTML = "";
+        commandLine.classList.add("transparent");
+
+        if (isReturningUser) {
+            const welcomeMsg = document.createElement("p");
+            welcomeMsg.className = "stream-text";
+            welcomeMsg.innerHTML = "Wake up, Neo... Welcome back. Skipping boot sequence.<br><br>Type <strong>help</strong> to see available commands.";
+            outputDiv.appendChild(welcomeMsg);
+            
+            setTimeout(() => {
+                commandLine.classList.remove("transparent");
+                commandLine.classList.add("fade-in-text");
+                commandInput.focus();
+            }, 1000);
+        } else {
+            localStorage.setItem('matrixVisited', 'true');
+            const bootLines = [
+                "INIT: version 2.88 booting",
+                "Loading kernel... OK",
+                "Mounting file systems... OK",
+                "Starting system logger: OK",
+                "Bypassing mainframe... DONE",
+                "Establishing secure connection... ESTABLISHED",
+                "WELCOME TO MY PORTFOLIO"
+            ];
+            
+            let delay = 0;
+            bootLines.forEach((line, index) => {
+                setTimeout(() => {
+                    const p = document.createElement("p");
+                    p.className = "stream-text";
+                    if (index === bootLines.length - 1) {
+                        p.style.color = "#33ff33";
+                        p.style.fontWeight = "bold";
+                        p.innerHTML = `${line}<br><br>Type <strong>help</strong> to see available commands. Or you can type <strong>hack</strong>.`;
+                    } else {
+                        p.innerText = line;
+                    }
+                    outputDiv.appendChild(p);
+                    window.scrollTo(0, document.body.scrollHeight);
+                }, delay);
+                delay += (index === bootLines.length - 1) ? 800 : 250;
+            });
+
+            setTimeout(() => {
+                commandLine.classList.remove("transparent");
+                commandLine.classList.add("fade-in-text");
+                commandInput.focus();
+            }, delay + 500);
+        }
+    };
+
+    // Check persistence
+    if (localStorage.getItem('matrixVisited') === 'true') {
+        runBootSequence(true);
+    } else {
+        typeWriter();
+    }
 
     // --- PART 2: BLUE PILL LOGIC (10s Countdown) ---
     bluePill.addEventListener("click", () => {
@@ -133,41 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     redPill.addEventListener("click", () => {
         matrixIntro.classList.add("matrix-fade");
         setTimeout(() => {
-            matrixIntro.classList.add("hidden");
-            terminal.classList.remove("hidden");
-
-            const outputDiv = document.getElementById("output");
-            const commandLine = document.querySelector(".command-line");
-            outputDiv.innerHTML = "";
-            commandLine.classList.add("transparent");
-
-            const welcomeText = "WELCOME TO MY PORTFOLIO";
-            const line1 = document.createElement("div");
-            line1.className = "typing";
-            outputDiv.appendChild(line1);
-
-            let charIndex = 0;
-            const typeInterval = setInterval(() => {
-                line1.textContent += welcomeText.charAt(charIndex);
-                charIndex++;
-                if (charIndex >= welcomeText.length) {
-                    clearInterval(typeInterval);
-                    line1.classList.remove("typing");
-                    line1.style.borderRight = "none";
-                    setTimeout(() => {
-                        const line2 = document.createElement("p");
-                        line2.innerHTML =
-                            "Type <strong>help</strong> to see available commands. Or you can type <strong>hack</strong>.";
-                        line2.className = "fade-in-text";
-                        outputDiv.appendChild(line2);
-                        setTimeout(() => {
-                            commandLine.classList.remove("transparent");
-                            commandLine.classList.add("fade-in-text");
-                            commandInput.focus();
-                        }, 800);
-                    }, 300);
-                }
-            }, 80);
+            runBootSequence(false);
         }, 3000);
     });
 
@@ -234,6 +290,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 "resume",
                 "message",
                 "exit",
+                "github",
+                "status",
+                "ask",
+                "mute",
+                "unmute",
+                "hack"
             ];
             const match = availableCommands.find((cmd) =>
                 cmd.startsWith(currentInput),
@@ -433,11 +495,92 @@ document.addEventListener("DOMContentLoaded", () => {
                 keySound.volume = 0.3;
                 response.innerHTML =
                     "<p class='stream-text'>Audio output: <span style='color:#33ff33'>ENABLED</span></p>";
+            } else if (command.startsWith("ask ")) {
+                const query = command.replace("ask ", "").trim();
+                let answer = "I'm sorry, my knowledge base doesn't cover that.";
+                if (query.includes("location") || query.includes("where")) answer = "I am based in Dhaka, Bangladesh.";
+                else if (query.includes("hire") || query.includes("job") || query.includes("work")) answer = "I am currently open to new opportunities!";
+                else if (query.includes("stack") || query.includes("tech")) answer = "My core stack is JavaScript, React, WordPress, and Shopify.";
+                else if (query.includes("salary") || query.includes("pay")) answer = "My salary expectations are negotiable depending on the role.";
+                
+                response.innerHTML = `<p class='stream-text'>> Processing query...</p><p class='stream-text' style='animation-delay: 0.5s'>${answer}</p>`;
+            } else if (command === "github") {
+                response.innerHTML = "<p class='stream-text'>Fetching live data from GitHub API...</p>";
+                fetch('https://api.github.com/users/nazsakib')
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            const githubData = document.createElement('div');
+                            githubData.innerHTML = `
+                                <p class="stream-text" style="color: #00ffff">User: ${data.login}</p>
+                                <p class="stream-text">Public Repos: ${data.public_repos}</p>
+                                <p class="stream-text">Followers: ${data.followers}</p>
+                                <p class="stream-text">URL: <a href="${data.html_url}" target="_blank" style="color: #33ff33;">${data.html_url}</a></p>
+                            `;
+                            response.appendChild(githubData);
+                            window.scrollTo(0, document.body.scrollHeight);
+                        }, 500);
+                    })
+                    .catch(err => {
+                        response.innerHTML += `<p class="error stream-text">Failed to fetch GitHub data.</p>`;
+                    });
+            } else if (command === "status") {
+                const date = new Date();
+                response.innerHTML = `
+                    <p class='stream-text'>Local connection established.</p>
+                    <p class='stream-text'>User Time: ${date.toLocaleTimeString()}</p>
+                    <p class='stream-text'>System Status: ONLINE</p>
+                    <p class='stream-text'>Browser Agent: ${navigator.userAgent.substring(0, 50)}...</p>
+                `;
+            } else if (['ls', 'cd', 'pwd', 'mkdir', 'rm', 'cat', 'echo', 'grep'].includes(command.split(" ")[0])) {
+                response.innerHTML = `<p class='error stream-text'>Access denied. Core Linux commands are restricted for guest users.</p>`;
             } else {
-                response.innerHTML = `<p class='error stream-text'>Command not found: ${command}. Type 'help'.</p>`;
+                // Typo check (Levenshtein Distance)
+                const availableCommands = ["help", "about", "projects", "skills", "contact", "clear", "resume", "message", "exit", "hack", "github", "status", "ask", "mute", "unmute"];
+                let closestMatch = null;
+                let smallestDist = 3; // Max threshold
+                
+                const getEditDistance = (a, b) => {
+                    if (a.length === 0) return b.length;
+                    if (b.length === 0) return a.length;
+                    const matrix = [];
+                    for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+                    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+                    for (let i = 1; i <= b.length; i++) {
+                        for (let j = 1; j <= a.length; j++) {
+                            if (b.charAt(i-1) === a.charAt(j-1)) matrix[i][j] = matrix[i-1][j-1];
+                            else matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
+                        }
+                    }
+                    return matrix[b.length][a.length];
+                };
+
+                for (let cmd of availableCommands) {
+                    const dist = getEditDistance(command, cmd);
+                    if (dist < smallestDist) {
+                        smallestDist = dist;
+                        closestMatch = cmd;
+                    }
+                }
+
+                if (closestMatch) {
+                    response.innerHTML = `<p class='error stream-text'>Command not found: ${command}. Did you mean '<span style="color:#00ffff; cursor:pointer;" onclick="document.getElementById('command-input').value='${closestMatch}'; document.getElementById('command-input').focus();">${closestMatch}</span>'?</p>`;
+                } else {
+                    response.innerHTML = `<p class='error stream-text'>Command not found: ${command}. Type 'help'.</p>`;
+                }
             }
 
             window.scrollTo(0, document.body.scrollHeight);
         }
     });
+
+    // --- RANDOM TEXT GLITCH EFFECT ---
+    setInterval(() => {
+        if (Math.random() > 0.8 && !document.body.classList.contains("system-failure")) {
+            terminal.classList.add("glitch-active");
+            setTimeout(() => {
+                terminal.classList.remove("glitch-active");
+            }, 200 + Math.random() * 300);
+        }
+    }, 5000);
 });

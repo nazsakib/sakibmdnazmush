@@ -117,11 +117,26 @@ body {
             rgba(0, 0, 0, 0),
             rgba(0, 0, 0, 0) 1px,
             rgba(0, 0, 0, 0.3) 1px,
-            rgba(0, 0, 0, 0.3) 2px);
-    background-size: 100% 4px;
+            rgba(0, 0, 0, 0.3) 2px),
+            radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,0.6) 100%);
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.9);
+    background-size: 100% 4px, 100% 100%;
     pointer-events: none;
     z-index: 999;
-    opacity: 0.5;
+    opacity: 0.7;
+}
+
+@keyframes textGlitch {
+    0% { transform: translate(0) }
+    20% { transform: translate(-2px, 1px) }
+    40% { transform: translate(-1px, -1px) }
+    60% { transform: translate(2px, 1px) }
+    80% { transform: translate(1px, -1px) }
+    100% { transform: translate(0) }
+}
+.glitch-active {
+    animation: textGlitch 0.2s linear infinite;
+    text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff;
 }
 
 .container {
